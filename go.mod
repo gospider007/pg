@@ -5,7 +5,7 @@ go 1.21.0
 require (
 	gitee.com/baixudong/tools v0.0.0-20230726070525-d80da902e36d
 	github.com/jackc/pgx/v5 v5.4.2
-	github.com/tidwall/gjson v1.15.0
+	github.com/tidwall/gjson v1.16.0
 )
 
 require (
@@ -22,9 +22,9 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/image v0.10.0 // indirect
-	golang.org/x/net v0.13.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/image v0.11.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 )
