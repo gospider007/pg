@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"gitee.com/baixudong/tools"
+	"gitee.com/baixudong/bson"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/tidwall/gjson"
 )
 
 type Client struct {
@@ -94,16 +93,16 @@ func (obj *Rows) Data() (map[string]any, error) {
 }
 
 // 返回游标的数据
-func (obj *Rows) Json() (gjson.Result, error) {
+func (obj *Rows) Json() (*bson.Client, error) {
 	datas, err := obj.rows.Values()
 	if err != nil {
-		return gjson.Result{}, err
+		return nil, err
 	}
 	maprs := map[string]any{}
 	for k, v := range datas {
 		maprs[obj.names[k]] = v
 	}
-	return tools.Any2json(maprs)
+	return bson.Decode(maprs)
 }
 
 // 关闭游标
@@ -119,7 +118,7 @@ func (obj *Client) Insert(ctx context.Context, table string, datas ...any) error
 	for _, data := range datas {
 		names := []string{}
 		values := []any{}
-		jsonData, err := tools.Any2json(data)
+		jsonData, err := bson.Decode(data)
 		if err != nil {
 			return err
 		}
