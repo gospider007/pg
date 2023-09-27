@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gitee.com/baixudong/bson"
+	"gitee.com/baixudong/gson"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -93,7 +93,7 @@ func (obj *Rows) Data() (map[string]any, error) {
 }
 
 // 返回游标的数据
-func (obj *Rows) Json() (*bson.Client, error) {
+func (obj *Rows) Json() (*gson.Client, error) {
 	datas, err := obj.rows.Values()
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (obj *Rows) Json() (*bson.Client, error) {
 	for k, v := range datas {
 		maprs[obj.names[k]] = v
 	}
-	return bson.Decode(maprs)
+	return gson.Decode(maprs)
 }
 
 // 关闭游标
@@ -118,7 +118,7 @@ func (obj *Client) Insert(ctx context.Context, table string, datas ...any) error
 	for _, data := range datas {
 		names := []string{}
 		values := []any{}
-		jsonData, err := bson.Decode(data)
+		jsonData, err := gson.Decode(data)
 		if err != nil {
 			return err
 		}
