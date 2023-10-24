@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gitee.com/baixudong/gson"
+	"github.com/gospider007/gson"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
