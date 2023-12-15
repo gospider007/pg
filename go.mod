@@ -3,17 +3,18 @@ module github.com/gospider007/pg
 go 1.21.3
 
 require (
-	github.com/gospider007/gson v0.0.0-20231024092648-c97546a0287d
-	github.com/jackc/pgx/v5 v5.4.3
+	github.com/gospider007/gson v0.0.0-20231119141525-66095080057d
+	github.com/jackc/pgx/v5 v5.5.1
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/gospider007/kinds v0.0.0-20231015025159-69ab7d8d9b94 // indirect
-	github.com/gospider007/re v0.0.0-20231015023348-717c984874af // indirect
-	github.com/gospider007/tools v0.0.0-20231015122431-2acd695704d6 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/gospider007/kinds v0.0.0-20231024093643-7a4424f2d30e // indirect
+	github.com/gospider007/re v0.0.0-20231024115818-adfd03636256 // indirect
+	github.com/gospider007/tools v0.0.0-20231202084937-8b2bc66f8198 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -21,10 +22,10 @@ require (
 	github.com/tidwall/gjson v1.17.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	go.mongodb.org/mongo-driver v1.12.1 // indirect
-	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/image v0.13.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sync v0.4.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	go.mongodb.org/mongo-driver v1.13.1 // indirect
+	golang.org/x/crypto v0.16.0 // indirect
+	golang.org/x/image v0.14.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/sync v0.5.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )
