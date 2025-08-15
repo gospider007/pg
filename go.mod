@@ -1,6 +1,6 @@
 module github.com/gospider007/pg
 
-go 1.24.0
+go 1.25
 
 require (
 	github.com/gospider007/gson v0.0.0-20241216122450-fb66d0ba2a07
