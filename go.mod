@@ -4,9 +4,9 @@ go 1.25
 
 require (
 	github.com/gospider007/bar v0.0.0-20250815030902-4f5b5d6312cf
-	github.com/gospider007/gson v0.0.0-20260108062328-278520589b2b
+	github.com/gospider007/gson v0.0.0-20260203092532-eb7c0c57f649
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
-	github.com/gospider007/thread v0.0.0-20250818134503-cc00ca28bc23
+	github.com/gospider007/thread v0.0.0-20260108062958-a2299a4cfb1f
 	github.com/jackc/pgx/v5 v5.8.0
 )
 
@@ -16,12 +16,12 @@ require (
 	github.com/gospider007/blog v0.0.0-20250815030743-f2af6b9013ab // indirect
 	github.com/gospider007/chanx v0.0.0-20250815031005-1e20b624bbcb // indirect
 	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c // indirect
-	github.com/gospider007/tools v0.0.0-20260108062122-babc2c2f0542 // indirect
+	github.com/gospider007/tools v0.0.0-20260120074453-dbd9d4748c8a // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.18.2 // indirect
+	github.com/klauspost/compress v1.18.3 // indirect
 	github.com/minio/minlz v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
@@ -29,11 +29,11 @@ require (
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	go.mongodb.org/mongo-driver v1.17.6 // indirect
+	go.mongodb.org/mongo-driver v1.17.8 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1 // indirect
-	golang.org/x/image v0.34.0 // indirect
-	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/image v0.35.0 // indirect
+	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/text v0.33.0 // indirect
 )

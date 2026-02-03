@@ -413,6 +413,16 @@ func (obj *Client) Update(ctx context.Context, table string, data any, where str
 func (obj *Client) UpdateOne(ctx context.Context, table string, data any, where string, args ...any) (*Result, error) {
 	return obj.update(ctx, table, data, true, where, args...)
 }
+func (obj *Client) UpsertOne(ctx context.Context, table string, data any, where string, args ...any) (*Result, error) {
+	result, err := obj.update(ctx, table, data, true, where, args...)
+	if err != nil {
+		return nil, err
+	}
+	if result.RowsAffected() != 0 {
+		return result, nil
+	}
+	return obj.Upsert(ctx, table, nil, data)
+}
 func ConverKey(key string) string {
 	return pgx.Identifier{strings.ToLower(key)}.Sanitize()
 }
