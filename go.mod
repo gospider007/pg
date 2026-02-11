@@ -6,7 +6,7 @@ require (
 	github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c
 	github.com/gospider007/gson v0.0.0-20260211061115-d2749fe6a54b
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
-	github.com/gospider007/thread v0.0.0-20260108062958-a2299a4cfb1f
+	github.com/gospider007/thread v0.0.0-20260211061331-cc185d7d0415
 	github.com/jackc/pgx/v5 v5.8.0
 )
 
