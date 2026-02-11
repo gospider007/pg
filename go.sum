@@ -9,8 +9,8 @@ github.com/golang/snappy v1.0.0/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEW
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
-github.com/gospider007/bar v0.0.0-20250815030902-4f5b5d6312cf h1:+f2h9VdKHmtdg88u1VpNikGcrDrz1IGgmWkSpLXR4HE=
-github.com/gospider007/bar v0.0.0-20250815030902-4f5b5d6312cf/go.mod h1:L34Ch8ImMk9GMZYM3KFlhT3MbPm/KowKWPPBJv29XWc=
+github.com/gospider007/bar v0.0.0-20260211060840-69efeb7c9b67 h1:52nF62XOdDqvA5dbR8vCdjtNToiSGzFEc8ZASGZTinQ=
+github.com/gospider007/bar v0.0.0-20260211060840-69efeb7c9b67/go.mod h1:ocgSxqAxlw/HQB8us7dv94FeTT2QcHv4d3pLiZNP4J4=
 github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83 h1:UuQSlgP3zYnSmg/qzhA8swQgoEOBJQsRpyyKn4Ma2F4=
 github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83/go.mod h1:n4Ht01FpVgQtaOpToh2EDosiBzbCeO58R/KCFAEEwuc=
 github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 h1:jE+Yn9OL6AWRlfkjVmEJ8GYRc4+Gq8n+8Xw5E2wWTQI=

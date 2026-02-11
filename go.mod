@@ -3,7 +3,7 @@ module github.com/gospider007/pg
 go 1.26.0
 
 require (
-	github.com/gospider007/bar v0.0.0-20250815030902-4f5b5d6312cf
+	github.com/gospider007/bar v0.0.0-20260211060840-69efeb7c9b67
 	github.com/gospider007/gson v0.0.0-20260211054528-358f2d1fed71
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
 	github.com/gospider007/thread v0.0.0-20260108062958-a2299a4cfb1f
