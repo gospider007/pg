@@ -3,8 +3,8 @@ module github.com/gospider007/pg
 go 1.26.0
 
 require (
-	github.com/gospider007/bar v0.0.0-20260211060840-69efeb7c9b67
-	github.com/gospider007/gson v0.0.0-20260211054528-358f2d1fed71
+	github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c
+	github.com/gospider007/gson v0.0.0-20260211061031-d25b95c02bea
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
 	github.com/gospider007/thread v0.0.0-20260108062958-a2299a4cfb1f
 	github.com/jackc/pgx/v5 v5.8.0
@@ -16,7 +16,7 @@ require (
 	github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83 // indirect
 	github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 // indirect
 	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8 // indirect
-	github.com/gospider007/tools v0.0.0-20260211054355-2d23f4156896 // indirect
+	github.com/gospider007/tools v0.0.0-20260211061019-053e0e2f25af // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
