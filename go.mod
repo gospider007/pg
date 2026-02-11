@@ -1,6 +1,6 @@
 module github.com/gospider007/pg
 
-go 1.25
+go 1.26.0
 
 require (
 	github.com/gospider007/bar v0.0.0-20250815030902-4f5b5d6312cf
@@ -14,7 +14,7 @@ require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/gospider007/blog v0.0.0-20250815030743-f2af6b9013ab // indirect
-	github.com/gospider007/chanx v0.0.0-20250815031005-1e20b624bbcb // indirect
+	github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 // indirect
 	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c // indirect
 	github.com/gospider007/tools v0.0.0-20260211034738-21b52f47811e // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
