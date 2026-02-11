@@ -13,9 +13,9 @@ require (
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
-	github.com/gospider007/blog v0.0.0-20250815030743-f2af6b9013ab // indirect
+	github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83 // indirect
 	github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 // indirect
-	github.com/gospider007/kinds v0.0.0-20250815031133-b2282666f69c // indirect
+	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8 // indirect
 	github.com/gospider007/tools v0.0.0-20260211054355-2d23f4156896 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
