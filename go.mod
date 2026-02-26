@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c
-	github.com/gospider007/gson v0.0.0-20260226061737-16f3e8857f16
+	github.com/gospider007/gson v0.0.0-20260226061950-5c3f79e698ed
 	github.com/gospider007/re v0.0.0-20251212071142-f56bce921150
 	github.com/gospider007/thread v0.0.0-20260211061331-cc185d7d0415
 	github.com/jackc/pgx/v5 v5.8.0
