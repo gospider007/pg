@@ -32,8 +32,8 @@ require (
 	go.mongodb.org/mongo-driver v1.17.9 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1 // indirect
-	golang.org/x/image v0.36.0 // indirect
-	golang.org/x/net v0.51.0 // indirect
+	golang.org/x/image v0.37.0 // indirect
+	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
 )
