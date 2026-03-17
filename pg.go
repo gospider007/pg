@@ -204,17 +204,17 @@ func (obj *Client) Finds(preCtx context.Context, query string, args ...any) (*Ro
 }
 
 type Column struct {
-	Position       int    `json:"position"`
-	Name           string `json:"name"`
-	Default        string `json:"default"`
-	Type           string `json:"type"`
-	Desc           string `json:"desc"`
+	Position       int    `json:"position"` //排序
+	Name           string `json:"name"`     //列名
+	Default        string `json:"default"`  //默认值
+	Type           string `json:"type"`     //类型
+	Desc           string `json:"desc"`     //描述
 	NotNull        bool   `json:"not_null"`
 	Primary        bool   `json:"primary"`
 	Unique         bool   `json:"unique"`
 	ConstraintType string `json:"constrainttype"`
 	Btree          bool   `json:"btree"`
-	IndexGroup     int    `json:"index_group"`
+	IndexGroup     int    `json:"index_group"` //组合索引分组
 }
 
 func (obj *Client) CreateTable(ctx context.Context, table string, columns ...Column) error {
