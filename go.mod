@@ -3,6 +3,7 @@ module github.com/gospider007/pg
 go 1.26.0
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c
 	github.com/gospider007/gson v0.0.0-20260312032453-c0586fa3915c
 	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab

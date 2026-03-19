@@ -9,6 +9,8 @@ github.com/golang/snappy v1.0.0/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEW
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c h1:xqjHdwfUlmeuzmxw5y+wNXzXC6sV7gomfHSockZZAJc=
 github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c/go.mod h1:HHUeXp6WOkCba138CrYKvGj/bGkZ81tiPCveLti3PRQ=
 github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83 h1:UuQSlgP3zYnSmg/qzhA8swQgoEOBJQsRpyyKn4Ma2F4=

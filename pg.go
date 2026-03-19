@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/gospider007/bar"
 	"github.com/gospider007/gson"
 	"github.com/gospider007/re"
@@ -63,7 +64,7 @@ func NewClient(ctx context.Context, option ClientOption) (*Client, error) {
 type Rows struct {
 	cnl   context.CancelFunc
 	rows  pgx.Rows
-	names []string
+	names []pgconn.FieldDescription
 }
 type Result struct {
 	result pgconn.CommandTag
@@ -109,7 +110,20 @@ func (obj *Rows) data() map[string]any {
 	}
 	maprs := map[string]any{}
 	for k, v := range datas {
-		maprs[obj.names[k]] = v
+		switch obj.names[k].DataTypeOID {
+		case 2950:
+			if l, ok := v.([16]byte); ok {
+				if u, err := uuid.FromBytes(l[:]); err == nil {
+					maprs[obj.names[k].Name] = u
+				} else {
+					maprs[obj.names[k].Name] = v
+				}
+			} else {
+				maprs[obj.names[k].Name] = v
+			}
+		default:
+			maprs[obj.names[k].Name] = v
+		}
 	}
 	return maprs
 }
@@ -124,7 +138,6 @@ func (obj *Client) parseInsertWithValues(values ...any) (string, string, []strin
 	vvs := []any{}
 	keys := []string{}
 	ti := 0
-
 	for i, vs := range values {
 		jsonData, err := gson.ParseRawMap(vs)
 		if err != nil {
@@ -191,13 +204,8 @@ func (obj *Client) Finds(preCtx context.Context, query string, args ...any) (*Ro
 		cnl()
 		return nil, err
 	}
-	cols := row.FieldDescriptions()
-	names := make([]string, len(cols))
-	for coln, col := range cols {
-		names[coln] = col.Name
-	}
 	return &Rows{
-		names: names,
+		names: row.FieldDescriptions(),
 		rows:  row,
 		cnl:   cnl,
 	}, err
@@ -642,6 +650,7 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 	}
 	var baseQuery string
 	if len(option.Show) > 0 {
+		option.Show = append(option.Show, indexName)
 		baseQuery = fmt.Sprintf("select %s from %s %s", strings.Join(option.Show, ", "), table, subWhere)
 	} else {
 		baseQuery = fmt.Sprintf("select * from %s %s", table, subWhere)
