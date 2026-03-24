@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260211061016-83e11c93b20c
-	github.com/gospider007/gson v0.0.0-20260323150146-de57f2199baf
+	github.com/gospider007/gson v0.0.0-20260323170526-fb9f244ac887
 	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab
 	github.com/gospider007/thread v0.0.0-20260227072212-5a85c55f9cb3
 	github.com/jackc/pgx/v5 v5.9.1
@@ -17,7 +17,7 @@ require (
 	github.com/gospider007/blog v0.0.0-20260211060835-ce5fbca77b83 // indirect
 	github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 // indirect
 	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8 // indirect
-	github.com/gospider007/tools v0.0.0-20260323151002-ebe96ce78e71 // indirect
+	github.com/gospider007/tools v0.0.0-20260324001556-1c93ad227dc2 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
@@ -33,7 +33,7 @@ require (
 	go.mongodb.org/mongo-driver v1.17.9 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1 // indirect
-	golang.org/x/image v0.37.0 // indirect
+	golang.org/x/image v0.38.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
