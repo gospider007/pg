@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260428065104-305d919b2224
-	github.com/gospider007/gson v0.0.0-20260429083118-91e95ae1154e
+	github.com/gospider007/gson v0.0.0-20260430060055-03b651e7e519
 	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab
 	github.com/gospider007/thread v0.0.0-20260227072212-5a85c55f9cb3
 	github.com/jackc/pgx/v5 v5.9.2
@@ -30,7 +30,7 @@ require (
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	go.mongodb.org/mongo-driver v1.17.9 // indirect
+	go.mongodb.org/mongo-driver/v2 v2.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
 	golang.org/x/image v0.39.0 // indirect
