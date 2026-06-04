@@ -8,7 +8,7 @@ require (
 	github.com/gospider007/gson v0.0.0-20260602103245-176f189573dd
 	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab
 	github.com/gospider007/thread v0.0.0-20260227072212-5a85c55f9cb3
-	github.com/jackc/pgx/v5 v5.9.2
+	github.com/jackc/pgx/v5 v5.10.0
 )
 
 require (
