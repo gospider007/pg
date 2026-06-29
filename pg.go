@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"iter"
-	"log"
 	"slices"
 	"sort"
 	"strings"
@@ -15,13 +14,15 @@ import (
 	"github.com/gospider007/gson"
 	"github.com/gospider007/re"
 	"github.com/gospider007/thread"
+	"github.com/gospider007/tools"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Client struct {
-	conn *pgxpool.Pool
+	conn   *pgxpool.Pool
+	option ClientOption
 }
 
 type ClientOption struct {
@@ -36,6 +37,16 @@ func (obj *Client) Close() {
 	obj.conn.Close()
 }
 func NewClient(ctx context.Context, option ClientOption) (*Client, error) {
+	conn, err := nwConn(ctx, option)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{
+		conn:   conn,
+		option: option,
+	}, nil
+}
+func nwConn(ctx context.Context, option ClientOption) (*pgxpool.Pool, error) {
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -54,17 +65,92 @@ func NewClient(ctx context.Context, option ClientOption) (*Client, error) {
 	dataBaseUrl := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", option.Usr, option.Pwd, option.Host, option.Port, option.Db)
 	conn, err := pgxpool.New(ctx, dataBaseUrl)
 	if err != nil {
+		return nil, ParseError(err)
+	}
+	err = conn.Ping(ctx)
+	if err != nil {
+		return nil, ParseError(err)
+	}
+	return conn, nil
+}
+
+// 切换数据库（关闭旧连接，建立新连接）
+func (obj *Client) SwitchDB(ctx context.Context, dbName string) error {
+	if dbName == "" {
+		dbName = "postgres"
+	}
+	if obj.option.Db == dbName {
+		return nil
+	}
+	newOption := obj.option
+	newOption.Db = dbName
+	conn, err := nwConn(ctx, newOption)
+	if err != nil {
+		return err
+	}
+	obj.conn.Close()
+	obj.conn = conn
+	obj.option = newOption
+	return nil
+}
+
+// 所有数据库
+func (obj *Client) DataBases(ctx context.Context) ([]string, error) {
+	if ctx == nil {
+		ctx = context.TODO()
+	}
+	rows, err := obj.Finds(ctx, "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname")
+	if err != nil {
 		return nil, err
 	}
-	return &Client{
-		conn: conn,
-	}, conn.Ping(ctx)
+	defer rows.Close()
+	dataBases := []string{}
+	for row := range rows.Range() {
+		if name, ok := row["datname"].(string); ok {
+			dataBases = append(dataBases, name)
+		}
+	}
+	return dataBases, nil
+}
+
+// 创建一个新的数据库
+// dbName: 要创建的数据库名
+func (obj *Client) CreateDB(ctx context.Context, dbName string, existsOk ...bool) error {
+	if _, err := obj.Exec(ctx, fmt.Sprintf(`CREATE DATABASE %s`, pgx.Identifier{dbName}.Sanitize())); err != nil {
+		return ParseError(err)
+	}
+	return nil
+}
+
+// 所有表
+// 当前数据库所有用户表（跨 schema，按 schema 分组）
+func (obj *Client) Tables(ctx context.Context) ([]string, error) {
+	rows, err := obj.Finds(ctx, `
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        ORDER BY table_name`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := []string{}
+	for row := range rows.Range() {
+		if table, _ := row["table_name"].(string); table != "" {
+			result = append(result, table)
+		}
+	}
+	return result, nil
+}
+func (obj *Client) DBName() string {
+	return obj.option.Db
 }
 
 type Rows struct {
 	cnl   context.CancelFunc
 	rows  pgx.Rows
 	names []pgconn.FieldDescription
+	conn  *pgxpool.Conn
 }
 type Result struct {
 	result pgconn.CommandTag
@@ -132,17 +218,16 @@ func (obj *Rows) data() map[string]any {
 func (obj *Rows) Close() {
 	obj.cnl()
 	obj.rows.Close()
+	if obj.conn != nil {
+		obj.conn.Release()
+	}
 }
-func (obj *Client) parseInsertWithValues(values ...any) (string, string, []string, []any, error) {
+func (obj *Client) parseInsertWithValues(values ...map[string]any) (string, string, []string, []any, error) {
 	indexs := make([]string, len(values))
 	vvs := []any{}
 	keys := []string{}
 	ti := 0
-	for i, vs := range values {
-		jsonData, err := gson.ParseRawMap(vs)
-		if err != nil {
-			return "", "", nil, nil, err
-		}
+	for i, jsonData := range values {
 		if i == 0 {
 			for key := range jsonData {
 				keys = append(keys, key)
@@ -166,7 +251,7 @@ func (obj *Client) parseInsertWithValues(values ...any) (string, string, []strin
 	return strings.Join(keys, ", "), strings.Join(indexs, ", "), keys, vvs, nil
 }
 
-func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string, datas ...any) (*Result, error) {
+func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string, datas ...map[string]any) (*Result, error) {
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -202,13 +287,40 @@ func (obj *Client) Finds(preCtx context.Context, query string, args ...any) (*Ro
 	row, err := obj.conn.Query(ctx, query, args...)
 	if err != nil {
 		cnl()
-		return nil, err
+		return nil, ParseError(err)
 	}
 	return &Rows{
 		names: row.FieldDescriptions(),
 		rows:  row,
 		cnl:   cnl,
-	}, err
+	}, nil
+}
+func (obj *Client) FindsWithConn(preCtx context.Context, fn func(context.Context, *pgxpool.Conn) error, query string, args ...any) (*Rows, error) {
+	if preCtx == nil {
+		preCtx = context.TODO()
+	}
+	ctx, cnl := context.WithCancel(preCtx)
+	conn, err := obj.conn.Acquire(ctx)
+	if err != nil {
+		cnl()
+		return nil, ParseError(err)
+	}
+	err = fn(ctx, conn)
+	if err != nil {
+		cnl()
+		return nil, err
+	}
+	row, err := conn.Query(ctx, query, args...)
+	if err != nil {
+		cnl()
+		return nil, ParseError(err)
+	}
+	return &Rows{
+		names: row.FieldDescriptions(),
+		rows:  row,
+		cnl:   cnl,
+		conn:  conn,
+	}, nil
 }
 
 type Column struct {
@@ -415,13 +527,13 @@ func (obj *Client) Exec(ctx context.Context, query string, args ...any) (*Result
 }
 
 // 执行
-func (obj *Client) Update(ctx context.Context, table string, data any, where string, args ...any) (*Result, error) {
+func (obj *Client) Update(ctx context.Context, table string, data map[string]any, where string, args ...any) (*Result, error) {
 	return obj.update(ctx, table, data, false, where, args...)
 }
-func (obj *Client) UpdateOne(ctx context.Context, table string, data any, where string, args ...any) (*Result, error) {
+func (obj *Client) UpdateOne(ctx context.Context, table string, data map[string]any, where string, args ...any) (*Result, error) {
 	return obj.update(ctx, table, data, true, where, args...)
 }
-func (obj *Client) UpsertOne(ctx context.Context, table string, data any, where string, args ...any) (*Result, error) {
+func (obj *Client) UpsertOne(ctx context.Context, table string, data map[string]any, where string, args ...any) (*Result, error) {
 	result, err := obj.update(ctx, table, data, true, where, args...)
 	if err != nil {
 		return nil, err
@@ -443,17 +555,14 @@ func clearValues(vals []any) {
 		}
 	}
 }
-func (obj *Client) update(ctx context.Context, table string, data any, isOne bool, where string, args ...any) (*Result, error) {
+
+func (obj *Client) update(ctx context.Context, table string, data map[string]any, isOne bool, where string, args ...any) (*Result, error) {
 	table = ConverKey(table)
 	if ctx == nil {
 		ctx = context.TODO()
 	}
 	if where == "" {
 		return nil, fmt.Errorf("where is empty")
-	}
-	jsonData, err := gson.Decode(data)
-	if err != nil {
-		return nil, err
 	}
 	names := []string{}
 	values := []any{}
@@ -462,9 +571,9 @@ func (obj *Client) update(ctx context.Context, table string, data any, isOne boo
 		values = append(values, val)
 		i++
 	}
-	for key, val := range jsonData.Map() {
+	for key, val := range data {
 		names = append(names, fmt.Sprintf("%s=$%d", ConverKey(key), i+1))
-		values = append(values, val.Value())
+		values = append(values, val)
 		i++
 	}
 	var query string
@@ -529,32 +638,65 @@ type ClearOption struct {
 	Bar    bool //是否开启进度条
 	Debug  bool //是否开启debug
 }
-type errStat string
+type ErrStat string
+
+func (e ErrStat) Error() string {
+	return string(e)
+}
 
 const (
-	ErrStatUnknow        errStat = "unknow error"
-	ErrStatTableNoExists errStat = "table no exists"
-	ErrStatDeadLock      errStat = "deadlock"
+	ErrStatTableNoExists ErrStat = "table no exists"
+	ErrStatDBNoExists    ErrStat = "db no exists"
+	ErrStatDeadLock      ErrStat = "deadlock"
 )
 
-func ParseError(err error) errStat {
+func ParseError(err error) error {
 	if err == nil {
-		return ErrStatUnknow
+		return err
 	}
 	rs := re.Search(`\(SQLSTATE (.*?)\)`, err.Error())
 	if rs == nil {
-		return ErrStatUnknow
+		return err
 	}
 	switch rs.Group(1) {
 	case "42P01":
-		return ErrStatTableNoExists
+		return tools.WrapError(ErrStatTableNoExists, err)
 	case "40P01":
-		return ErrStatDeadLock
+		return tools.WrapError(ErrStatDeadLock, err)
+	case "3D000":
+		return tools.WrapError(ErrStatDBNoExists, err)
 	default:
-		return ErrStatUnknow
+		return err
 	}
 }
-
+func newClearQuery(table string, indexName string, oid any, desc bool, show []string, limit int) (string, []any) {
+	var subWhere string
+	subArgs := []any{}
+	if oid != nil {
+		if desc {
+			subWhere = fmt.Sprintf("where %s<$1 ", indexName)
+		} else {
+			subWhere = fmt.Sprintf("where %s>$1 ", indexName)
+		}
+		subArgs = append(subArgs, oid)
+	}
+	if desc {
+		subWhere += fmt.Sprintf("order by %s desc", indexName)
+	} else {
+		subWhere += fmt.Sprintf("order by %s asc", indexName)
+	}
+	var baseQuery string
+	if len(show) > 0 {
+		show = append(show, indexName)
+		baseQuery = fmt.Sprintf("select %s from %s %s", strings.Join(show, ", "), table, subWhere)
+	} else {
+		baseQuery = fmt.Sprintf("select * from %s %s", table, subWhere)
+	}
+	if limit > 0 {
+		baseQuery += fmt.Sprintf(" limit %d", limit)
+	}
+	return baseQuery, subArgs
+}
 func (obj *Client) ClearTable(ctx context.Context, table string, indexName string, tag string, clearFn func(context.Context, map[string]any) error, options ...ClearOption) error {
 	if ctx == nil {
 		ctx = context.TODO()
@@ -583,8 +725,12 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 	logTableName := table + "_clear_log"
 	logData, err := obj.Find(ctx, fmt.Sprintf("select total,current,oid from %s where tag=$1", logTableName), tag)
 	if err != nil {
-		if ParseError(err) == ErrStatTableNoExists {
+		if errors.Is(err, ErrStatTableNoExists) {
 			indexColum.Name = "oid"
+			indexColum.Primary = false
+			indexColum.Unique = false
+			indexColum.Btree = false
+			indexColum.IndexGroup = 0
 			if err = obj.CreateTable(ctx, logTableName,
 				indexColum,
 				Column{
@@ -620,45 +766,50 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 		return err
 	}
 	if option.Oid == nil {
-		if logJsonData.Get("oid").Exists() {
-			option.Oid = logData["oid"]
+		if ooid, ok := logData["oid"]; ok {
+			option.Oid = ooid
 		}
 	} else {
 		logData["oid"] = option.Oid
 	}
 	total, err := obj.Count(ctx, table, "")
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 	logData["total"] = total
 	logData["tag"] = tag
 	current := logJsonData.Get("current").Int()
-	var subWhere string
-	subArgs := []any{}
-	if option.Oid != nil {
-		if option.Desc {
-			subWhere = fmt.Sprintf("where %s<$1 ", indexName)
-		} else {
-			subWhere = fmt.Sprintf("where %s>$1 ", indexName)
+
+	limit := 10000
+	queryOid := option.Oid
+	queryDesc := option.Desc
+	queryShow := option.Show
+	rows := make(chan map[string]any, limit)
+	var rowsErr error
+	go func() {
+		defer close(rows)
+		for {
+			baseQuery, subArgs := newClearQuery(table, indexName, queryOid, queryDesc, queryShow, limit)
+			datas, ferr := obj.Finds(ctx, baseQuery, subArgs...)
+			if ferr != nil {
+				rowsErr = ferr
+				return
+			}
+			total := 0
+			for data := range datas.Range() {
+				total++
+				select {
+				case rows <- data:
+					queryOid = data[indexName]
+				case <-ctx.Done():
+					return
+				}
+			}
+			if total == 0 {
+				return
+			}
 		}
-		subArgs = append(subArgs, option.Oid)
-	}
-	if option.Desc {
-		subWhere += fmt.Sprintf("order by %s desc", indexName)
-	} else {
-		subWhere += fmt.Sprintf("order by %s asc", indexName)
-	}
-	var baseQuery string
-	if len(option.Show) > 0 {
-		option.Show = append(option.Show, indexName)
-		baseQuery = fmt.Sprintf("select %s from %s %s", strings.Join(option.Show, ", "), table, subWhere)
-	} else {
-		baseQuery = fmt.Sprintf("select * from %s %s", table, subWhere)
-	}
-	rows, err := obj.Finds(ctx, baseQuery, subArgs...)
-	if err != nil {
-		return err
-	}
+	}()
 	var lastOid any
 	var barC *bar.Client
 	if option.Bar {
@@ -688,19 +839,30 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 			return terr
 		},
 	})
-	for row := range rows.Range() {
-		_, err = thC.Write(ctx, &thread.Task{
-			Func: func(cctx context.Context, data map[string]any) (any, error) {
-				indexValue, ok := data[indexName]
-				if !ok {
-					return nil, errors.New("not found indexName with data")
-				}
-				return indexValue, clearFn(cctx, data)
-			},
-			Args: []any{row},
-		})
-		if err != nil {
-			break
+tasks:
+	for {
+		select {
+		case <-ctx.Done():
+			err = ctx.Err()
+			break tasks
+		case row := <-rows:
+			if row == nil {
+				err = rowsErr
+				break tasks
+			}
+			_, err = thC.Write(ctx, &thread.Task{
+				Func: func(cctx context.Context, data map[string]any) (any, error) {
+					indexValue, ok := data[indexName]
+					if !ok {
+						return nil, errors.New("not found indexName with data")
+					}
+					return indexValue, clearFn(cctx, data)
+				},
+				Args: []any{row},
+			})
+			if err != nil {
+				break tasks
+			}
 		}
 	}
 	if err == nil {
