@@ -4,20 +4,20 @@ go 1.27.0
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/gospider007/bar v0.0.0-20260428065104-305d919b2224
-	github.com/gospider007/gson v0.0.0-20260818092213-ef54a5cfa7c7
-	github.com/gospider007/re v0.0.0-20260227072205-6223d82a3dab
-	github.com/gospider007/thread v0.0.0-20260715073649-94b15f3ca99e
-	github.com/gospider007/tools v0.0.0-20260818092029-81f710f25d98
+	github.com/gospider007/bar v0.0.0-20260824054542-54b07efce07c
+	github.com/gospider007/gson v0.0.0-20260824054557-3a03c2c5ae72
+	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
+	github.com/gospider007/thread v0.0.0-20260824054545-fe2a3cc2a1fd
+	github.com/gospider007/tools v0.0.0-20260824054551-c9d5879d12e8
 	github.com/jackc/pgx/v5 v5.10.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.2.2 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
-	github.com/gospider007/blog v0.0.0-20260428065025-f3c72a6a8a13 // indirect
-	github.com/gospider007/chanx v0.0.0-20260211054348-1dfd65a36494 // indirect
-	github.com/gospider007/kinds v0.0.0-20260211060834-06a10e2431d8 // indirect
+	github.com/gospider007/blog v0.0.0-20260824054542-c49de6365542 // indirect
+	github.com/gospider007/chanx v0.0.0-20260824054539-b54f23393586 // indirect
+	github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
