@@ -4,11 +4,11 @@ go 1.27.0
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/gospider007/bar v0.0.0-20260824054542-54b07efce07c
-	github.com/gospider007/gson v0.0.0-20260824054557-3a03c2c5ae72
+	github.com/gospider007/bar v0.0.0-20260824054619-6360e446e260
+	github.com/gospider007/gson v0.0.0-20260824054658-bba919000f86
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
-	github.com/gospider007/thread v0.0.0-20260824054545-fe2a3cc2a1fd
-	github.com/gospider007/tools v0.0.0-20260824054551-c9d5879d12e8
+	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
+	github.com/gospider007/tools v0.0.0-20260824054625-953e094a3970
 	github.com/jackc/pgx/v5 v5.10.0
 )
 
