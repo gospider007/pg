@@ -25,8 +25,8 @@ github.com/gospider007/re v0.0.0-20260824054539-32823144d328 h1:2nJmbFr4WnHMy26A
 github.com/gospider007/re v0.0.0-20260824054539-32823144d328/go.mod h1:h9MD0+Vqyo+4Oy17pk9j4B9fqQPnPMFZksP3G27VV5I=
 github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb h1:05b9zV9dh2FA1SXa3li3z3eTL5/6X+J6qtzmLfwWpwA=
 github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb/go.mod h1:EwkHH1xiyn0f1rCBZ8Lnwkd8zhtbpRDwms/7x13dLiE=
-github.com/gospider007/tools v0.0.0-20260824054625-953e094a3970 h1:R9XezOzz+fZv6sS5KkoS5V7cBoEGeHQ/R1GHucwIuWk=
-github.com/gospider007/tools v0.0.0-20260824054625-953e094a3970/go.mod h1:KtDvXLfamgIpsQelfKoO8yiYUcia+vOlPercpCkpgLo=
+github.com/gospider007/tools v0.0.0-20260826022531-159b55a750ab h1:P1TQvYsWg/7GqpmXCGcTWiDEY39WJzC8Z8uxuzm+umk=
+github.com/gospider007/tools v0.0.0-20260826022531-159b55a750ab/go.mod h1:KtDvXLfamgIpsQelfKoO8yiYUcia+vOlPercpCkpgLo=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 h1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=
