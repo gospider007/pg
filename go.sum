@@ -17,8 +17,8 @@ github.com/gospider007/blog v0.0.0-20260824054542-c49de6365542 h1:aj3zGVOgK3Xt0T
 github.com/gospider007/blog v0.0.0-20260824054542-c49de6365542/go.mod h1:3ZU8iU79cg0zAp+MLMib7wbGDyWDEwcR10Q8jf0JM7I=
 github.com/gospider007/chanx v0.0.0-20260824054539-b54f23393586 h1:5lhFOZZrQ8aw1BbEbpn7BbQO4PM3NQ5W2tcQOSgdlZo=
 github.com/gospider007/chanx v0.0.0-20260824054539-b54f23393586/go.mod h1:eMW09IGlVmB6CfsM+c0tm8J+/xrbk1xVHc9WIlBt0nU=
-github.com/gospider007/gson v0.0.0-20260828020149-4220411178f2 h1:luR8tFOKtmntbYPvu1PS+3GZ0pSBAPhqmpHvqH6ZKeU=
-github.com/gospider007/gson v0.0.0-20260828020149-4220411178f2/go.mod h1:LtESW2t7SqisM15ftz9bIKFO/XNAfpUmRdoh/jGhqAE=
+github.com/gospider007/gson v0.0.0-20260828020246-dae16e74e9cb h1:pDWGRugSt2PY+9FMzzfYoC/fw4Q2pjC7pDAlxj+R7fw=
+github.com/gospider007/gson v0.0.0-20260828020246-dae16e74e9cb/go.mod h1:vndeAqc91HC5dv4dRKERTl59OMezEmR/0HBNmC9HFMc=
 github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac h1:lJb+JuTFlDiG/5t+7/224eIg3gsLrGJ1igeARm2z2Fg=
 github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac/go.mod h1:75RS5JPKWcrHfr+7VCZxhdI5anNguHHGS/Y9HPWBqTw=
 github.com/gospider007/re v0.0.0-20260824054539-32823144d328 h1:2nJmbFr4WnHMy26A0GijYfAF80BNxoYEB1uKlCQV930=
