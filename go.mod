@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260824054619-6360e446e260
-	github.com/gospider007/gson v0.0.0-20260907003557-cfc385679894
+	github.com/gospider007/gson v0.0.0-20260907003655-a4a667dfce84
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
 	github.com/gospider007/tools v0.0.0-20260907003557-2e499500cd4e
