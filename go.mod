@@ -9,7 +9,7 @@ require (
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
 	github.com/gospider007/tools v0.0.0-20260907003557-2e499500cd4e
-	github.com/jackc/pgx/v5 v5.10.0
+	github.com/jackc/pgx/v5 v5.11.0
 )
 
 require (
