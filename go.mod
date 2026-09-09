@@ -5,10 +5,10 @@ go 1.27.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260907015442-6d4252a2a33d
-	github.com/gospider007/gson v0.0.0-20260907015427-4782363d52be
+	github.com/gospider007/gson v0.0.0-20260909053524-4654024fcded
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
-	github.com/gospider007/tools v0.0.0-20260907003557-2e499500cd4e
+	github.com/gospider007/tools v0.0.0-20260909053522-7e6782a3cdf0
 	github.com/jackc/pgx/v5 v5.11.0
 )
 
