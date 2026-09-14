@@ -8,7 +8,6 @@ require (
 	github.com/gospider007/gson v0.0.0-20260911054818-f4a1ada33ac0
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
-	github.com/gospider007/tools v0.0.0-20260911054714-b4af053b217c
 	github.com/jackc/pgx/v5 v5.11.0
 )
 
@@ -18,6 +17,7 @@ require (
 	github.com/gospider007/blog v0.0.0-20260907015415-59e2a9022fa5 // indirect
 	github.com/gospider007/chanx v0.0.0-20260824054539-b54f23393586 // indirect
 	github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac // indirect
+	github.com/gospider007/tools v0.0.0-20260911054714-b4af053b217c // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect

@@ -14,7 +14,6 @@ import (
 	"github.com/gospider007/gson"
 	"github.com/gospider007/re"
 	"github.com/gospider007/thread"
-	"github.com/gospider007/tools"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -252,6 +251,9 @@ func (obj *Client) parseInsertWithValues(values ...map[string]any) (string, stri
 }
 
 func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string, datas ...map[string]any) (*Result, error) {
+	if len(conflicts) == 0 {
+		return nil, errors.New("not found conflicts")
+	}
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -260,22 +262,28 @@ func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string,
 		return nil, err
 	}
 	var query string
-	if len(conflicts) > 0 {
-		upKeys := []string{}
-		for _, name := range names {
-			if !slices.Contains(conflicts, name) {
-				upKeys = append(upKeys, fmt.Sprintf("%s=EXCLUDED.%s", name, name))
-			}
+	upKeys := []string{}
+	for _, name := range names {
+		if !slices.Contains(conflicts, name) {
+			upKeys = append(upKeys, fmt.Sprintf("%s=EXCLUDED.%s", name, name))
 		}
-		if len(upKeys) > 0 {
-			query = fmt.Sprintf("insert into %s (%s) values %s on conflict (%s) do update set %s", table, keys, indexs, strings.Join(conflicts, ", "), strings.Join(upKeys, ", "))
-		} else {
-			query = fmt.Sprintf("insert into %s (%s) values %s on conflict (%s)", table, keys, indexs, strings.Join(conflicts, ", "))
-		}
+	}
+	if len(upKeys) > 0 {
+		query = fmt.Sprintf("insert into %s (%s) values %s on conflict (%s) do update set %s", table, keys, indexs, strings.Join(conflicts, ", "), strings.Join(upKeys, ", "))
 	} else {
-		query = fmt.Sprintf("insert into %s (%s) values %s", table, keys, indexs)
+		query = fmt.Sprintf("insert into %s (%s) values %s on conflict (%s)", table, keys, indexs, strings.Join(conflicts, ", "))
 	}
 	return obj.Exec(ctx, query, values...)
+}
+func (obj *Client) Insert(ctx context.Context, table string, datas ...map[string]any) (*Result, error) {
+	if ctx == nil {
+		ctx = context.TODO()
+	}
+	keys, indexs, _, values, err := obj.parseInsertWithValues(datas...)
+	if err != nil {
+		return nil, err
+	}
+	return obj.Exec(ctx, fmt.Sprintf("insert into %s (%s) values %s", table, keys, indexs), values...)
 }
 
 // finds   $1  is args
@@ -541,7 +549,14 @@ func (obj *Client) UpsertOne(ctx context.Context, table string, data map[string]
 	if result.RowsAffected() != 0 {
 		return result, nil
 	}
-	return obj.Upsert(ctx, table, nil, data)
+	result, err = obj.Insert(ctx, table, data)
+	if err == nil {
+		return result, err
+	}
+	if ParseError(err) == ErrStatUniqueConstraint {
+		return obj.UpsertOne(ctx, table, data, where, args...)
+	}
+	return result, err
 }
 func ConverKey(key string) string {
 	return pgx.Identifier{strings.ToLower(key)}.Sanitize()
@@ -645,9 +660,10 @@ func (e ErrStat) Error() string {
 }
 
 const (
-	ErrStatTableNoExists ErrStat = "table no exists"
-	ErrStatDBNoExists    ErrStat = "db no exists"
-	ErrStatDeadLock      ErrStat = "deadlock"
+	ErrStatTableNoExists    ErrStat = "table no exists"
+	ErrStatDBNoExists       ErrStat = "db no exists"
+	ErrStatDeadLock         ErrStat = "deadlock"
+	ErrStatUniqueConstraint ErrStat = "unique constraint"
 )
 
 func ParseError(err error) error {
@@ -660,11 +676,13 @@ func ParseError(err error) error {
 	}
 	switch rs.Group(1) {
 	case "42P01":
-		return tools.WrapError(ErrStatTableNoExists, err)
+		return ErrStatTableNoExists
 	case "40P01":
-		return tools.WrapError(ErrStatDeadLock, err)
+		return ErrStatDeadLock
 	case "3D000":
-		return tools.WrapError(ErrStatDBNoExists, err)
+		return ErrStatDBNoExists
+	case "23505":
+		return ErrStatUniqueConstraint
 	default:
 		return err
 	}
