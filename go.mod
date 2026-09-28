@@ -5,7 +5,7 @@ go 1.27.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/gospider007/bar v0.0.0-20260907015442-6d4252a2a33d
-	github.com/gospider007/gson v0.0.0-20260922022812-b9fb761eabbc
+	github.com/gospider007/gson v0.0.0-20260928021831-183596dae4f4
 	github.com/gospider007/re v0.0.0-20260824054539-32823144d328
 	github.com/gospider007/thread v0.0.0-20260824054620-3919072a5afb
 	github.com/jackc/pgx/v5 v5.11.0
@@ -17,7 +17,7 @@ require (
 	github.com/gospider007/blog v0.0.0-20260907015415-59e2a9022fa5 // indirect
 	github.com/gospider007/chanx v0.0.0-20260824054539-b54f23393586 // indirect
 	github.com/gospider007/kinds v0.0.0-20260824054539-a612e386b5ac // indirect
-	github.com/gospider007/tools v0.0.0-20260922022651-0a9e58d5bc65 // indirect
+	github.com/gospider007/tools v0.0.0-20260928021832-67b261236d01 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
