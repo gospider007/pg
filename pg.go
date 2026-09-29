@@ -254,6 +254,7 @@ func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string,
 	if len(conflicts) == 0 {
 		return nil, errors.New("not found conflicts")
 	}
+	table = ConverTable(table)
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -276,6 +277,7 @@ func (obj *Client) Upsert(ctx context.Context, table string, conflicts []string,
 	return obj.Exec(ctx, query, values...)
 }
 func (obj *Client) Insert(ctx context.Context, table string, datas ...map[string]any) (*Result, error) {
+	table = ConverTable(table)
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -349,6 +351,7 @@ func (obj *Client) CreateTable(ctx context.Context, table string, columns ...Col
 	if len(columns) == 0 {
 		return nil
 	}
+	table = ConverTable(table)
 	sort.Slice(columns, func(i, j int) bool {
 		return columns[i].Position < columns[j].Position
 	})
@@ -416,10 +419,12 @@ func (obj *Client) CreateTable(ctx context.Context, table string, columns ...Col
 	for i, btree := range btrees {
 		if i == 0 {
 			for _, b := range btree {
-				blines = append(blines, fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s USING btree (%s);", fmt.Sprintf("idx_%s_%s", table, b), table, b))
+				indexName := pgx.Identifier{strings.ToLower(fmt.Sprintf("idx_%s_%s", table, b))}.Sanitize()
+				blines = append(blines, fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s USING btree (%s);", indexName, table, b))
 			}
 		} else {
-			blines = append(blines, fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s USING btree (%s);", fmt.Sprintf("idx_%s_%s", table, strings.Join(btree, "_")), table, strings.Join(btree, ", ")))
+			indexName := pgx.Identifier{strings.ToLower(fmt.Sprintf("idx_%s_%s", table, strings.Join(btree, "_")))}.Sanitize()
+			blines = append(blines, fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s USING btree (%s);", indexName, table, strings.Join(btree, ", ")))
 		}
 	}
 	sql := fmt.Sprintf(
@@ -440,6 +445,8 @@ func (obj *Client) Fields(preCtx context.Context, table string) ([]Column, error
 	if preCtx == nil {
 		preCtx = context.TODO()
 	}
+	// 查 information_schema 要用裸名字，且统一小写（information_schema 比对大小写敏感）
+	table = rawTableName(table)
 	row, err := obj.Finds(preCtx, `SELECT
     c.ordinal_position                     AS position,
     c.column_name                          AS name,
@@ -492,9 +499,11 @@ func (obj *Client) Count(ctx context.Context, tableName string, where string, ar
 	}
 	var query string
 	if where == "" {
-		query = fmt.Sprintf(`SELECT reltuples::BIGINT AS approx_rows FROM pg_class WHERE relname = '%s';`, tableName)
+		// relname 里存的是裸名字，必须用 rawTableName（不能是带引号的 ConverTable）
+		query = `SELECT reltuples::BIGINT AS approx_rows FROM pg_class WHERE relname = $1;`
+		args = append([]any{rawTableName(tableName)}, args...)
 	} else {
-		query = fmt.Sprintf(`select count(1) from %s where %s`, tableName, where)
+		query = fmt.Sprintf(`select count(1) from %s where %s`, ConverTable(tableName), where)
 	}
 	row, err := obj.Find(ctx, query, args...)
 	if err != nil {
@@ -561,6 +570,21 @@ func (obj *Client) UpsertOne(ctx context.Context, table string, data map[string]
 func ConverKey(key string) string {
 	return pgx.Identifier{strings.ToLower(key)}.Sanitize()
 }
+
+// ConverTable 把表名转换成安全的 sql 标识符（转小写并加双引号）
+// 只能用在 sql 中「表名/标识符」出现的位置，如 from %s、into %s、CREATE TABLE %s，
+// 避免以数字或特殊字符开头的表名报 trailing junk after numeric literal (SQLSTATE 42601)
+func ConverTable(table string) string {
+	return pgx.Identifier{strings.ToLower(table)}.Sanitize()
+}
+
+// rawTableName 返回表名在系统表/information_schema 中存储的裸名字（不带双引号）
+// 注意：不能使用 ConverTable，因为 ConverTable 带双引号，是 sql 标识符字面量，
+// 而 pg_class.relname / information_schema 里存的是裸名字，
+// 误用会导致 relname = '"xxx"' 永远匹配不到（静默返回 0）
+func rawTableName(table string) string {
+	return strings.ToLower(table)
+}
 func clearValues(vals []any) {
 	for i, val := range vals {
 		switch v := val.(type) {
@@ -572,7 +596,7 @@ func clearValues(vals []any) {
 }
 
 func (obj *Client) update(ctx context.Context, table string, data map[string]any, isOne bool, where string, args ...any) (*Result, error) {
-	table = ConverKey(table)
+	table = ConverTable(table)
 	if ctx == nil {
 		ctx = context.TODO()
 	}
@@ -613,6 +637,7 @@ func (obj *Client) delete(ctx context.Context, table string, isOne bool, where s
 	if where == "" {
 		return nil, fmt.Errorf("where is empty")
 	}
+	table = ConverTable(table)
 	var queyr string
 	if isOne {
 		queyr = fmt.Sprintf("delete from %s where %s limit 1", table, where)
@@ -630,7 +655,7 @@ func (obj *Client) Exists(ctx context.Context, table string, where string, args 
 	if where == "" {
 		return false, fmt.Errorf("where is empty")
 	}
-	exeResult, err := obj.Finds(ctx, fmt.Sprintf("select 1 from %s where %s limit 1", table, where), args...)
+	exeResult, err := obj.Finds(ctx, fmt.Sprintf("select 1 from %s where %s limit 1", ConverTable(table), where), args...)
 	if err != nil {
 		return false, err
 	}
@@ -706,9 +731,9 @@ func newClearQuery(table string, indexName string, oid any, desc bool, show []st
 	var baseQuery string
 	if len(show) > 0 {
 		show = append(show, indexName)
-		baseQuery = fmt.Sprintf("select %s from %s %s", strings.Join(show, ", "), table, subWhere)
+		baseQuery = fmt.Sprintf("select %s from %s %s", strings.Join(show, ", "), ConverTable(table), subWhere)
 	} else {
-		baseQuery = fmt.Sprintf("select * from %s %s", table, subWhere)
+		baseQuery = fmt.Sprintf("select * from %s %s", ConverTable(table), subWhere)
 	}
 	if limit > 0 {
 		baseQuery += fmt.Sprintf(" limit %d", limit)
@@ -741,7 +766,8 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 		return errors.New("not found indexName")
 	}
 	logTableName := table + "_clear_log"
-	logData, err := obj.Find(ctx, fmt.Sprintf("select total,current,oid from %s where tag=$1", logTableName), tag)
+	logTableSQL := ConverTable(logTableName)
+	logData, err := obj.Find(ctx, fmt.Sprintf("select total,current,oid from %s where tag=$1", logTableSQL), tag)
 	if err != nil {
 		if errors.Is(err, ErrStatTableNoExists) {
 			indexColum.Name = "oid"
@@ -767,7 +793,7 @@ func (obj *Client) ClearTable(ctx context.Context, table string, indexName strin
 			); err != nil {
 				return err
 			}
-			logData, err = obj.Find(ctx, fmt.Sprintf("select total,current,oid from %s where tag=$1", logTableName), tag)
+			logData, err = obj.Find(ctx, fmt.Sprintf("select total,current,oid from %s where tag=$1", logTableSQL), tag)
 		}
 		if err != nil {
 			return err
